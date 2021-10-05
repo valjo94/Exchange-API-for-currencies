@@ -47,8 +47,8 @@ public class ExchangeRateController {
             @ApiResponse(responseCode = "503", content = @Content(schema = @Schema(implementation = ErrorMessage.class)))
     })
     @GetMapping(produces = "application/json")
-    public ResponseEntity<ExchangeRateDTO> getExchangeRate(@RequestParam @CurrencyConstraint String sourceCurrency,
-                                           @RequestParam @CurrencyConstraint String targetCurrency) throws ServiceUnavailableException {
+    public ResponseEntity<ExchangeRateDTO> getExchangeRate(@RequestParam @CurrencyConstraint(message = "sourceCurrency") String sourceCurrency,
+                                           @RequestParam @CurrencyConstraint(message = "targetCurrency") String targetCurrency) throws ServiceUnavailableException {
         double currencyExchange = currencyExchangeService.getCurrencyExchangeRate(sourceCurrency, targetCurrency);
         return new ResponseEntity<>(new ExchangeRateDTO(sourceCurrency, targetCurrency, currencyExchange), HttpStatus.OK);
     }

@@ -1,7 +1,6 @@
-package com.currency.foreignexchange;
+package com.currency.foreignexchange.services;
 
 import com.currency.foreignexchange.data.dto.external.CurrencyLayerDTO;
-import com.currency.foreignexchange.services.CurrencyExchangeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +16,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for CurrencyExchangeService.
+ */
 @SpringBootTest
 public class CurrencyExchangeServiceTest {
 
-    CurrencyExchangeService currencyExchangeService;
+    private CurrencyExchangeService currencyExchangeService;
 
     @BeforeEach
     void init() {
@@ -32,6 +34,9 @@ public class CurrencyExchangeServiceTest {
         currencyExchangeService = new CurrencyExchangeService(mockedRestTemplate);
     }
 
+    /**
+     * Test getCurrencyExchangeRate method returns proper exchange rate.
+     */
     @Test
     void testGetCurrencyExchangeRate() throws ServiceUnavailableException {
         double currencyExchangeRate = currencyExchangeService.getCurrencyExchangeRate("EUR", "BGN");
@@ -40,6 +45,9 @@ public class CurrencyExchangeServiceTest {
         Assertions.assertEquals(expectedExchangeRate, currencyExchangeRate);
     }
 
+    /**
+     * Test getCurrencyExchangeRate method should return 0 if no exception is thrown and no result is retrieved.
+     */
     @Test
     void testGetCurrencyExchangeRateShouldReturnZero() throws ServiceUnavailableException {
         RestTemplate mockedRestTemplate = Mockito.mock(RestTemplate.class);
@@ -50,6 +58,9 @@ public class CurrencyExchangeServiceTest {
         Assertions.assertEquals(0, currencyExchangeRate);
     }
 
+    /**
+     * Test getCurrencyExchangeRate should throw ServiceUnavailableException if wrong currency is passed.
+     */
     @Test
     void testGetCurrencyExchangeRateWithWrongCurrency() {
         RestTemplate mockedRestTemplate = Mockito.mock(RestTemplate.class);
@@ -60,6 +71,9 @@ public class CurrencyExchangeServiceTest {
                 () -> currencyExchangeService.getCurrencyExchangeRate("EUR", "BGNN"));
     }
 
+    /**
+     * Test convertCurrency method should convert properly currencies.
+     */
     @Test
     void testConvertCurrency() throws ServiceUnavailableException {
         double expectedResultRounded = Math.round(9.77806463563585 * 100.0) / 100.0;
@@ -70,6 +84,9 @@ public class CurrencyExchangeServiceTest {
         Assertions.assertEquals(expectedResultRounded, realResultRounded);
     }
 
+    /**
+     * Test convertCurrency method should return zero if getForObject returns null.
+     */
     @Test
     void testConvertCurrencyShouldReturnZero() throws ServiceUnavailableException {
         RestTemplate mockedRestTemplate = Mockito.mock(RestTemplate.class);
@@ -80,6 +97,9 @@ public class CurrencyExchangeServiceTest {
         Assertions.assertEquals(0, realResult);
     }
 
+    /**
+     * Test convertCurrency method with wrong currency string should throw ServiceUnavailableException.
+     */
     @Test
     void testConvertCurrencyWithWrongCurrencyException() {
         RestTemplate mockedRestTemplate = Mockito.mock(RestTemplate.class);

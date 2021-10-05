@@ -40,7 +40,7 @@ public class CurrencyTransaction {
         return sourceCurrency;
     }
 
-    public void setSourceCurrency(@CurrencyConstraint String sourceCurrency) {
+    public void setSourceCurrency(@CurrencyConstraint(message = "sourceCurrency") String sourceCurrency) {
         this.sourceCurrency = sourceCurrency;
     }
 
@@ -49,7 +49,7 @@ public class CurrencyTransaction {
         return targetCurrency;
     }
 
-    public void setTargetCurrency(@CurrencyConstraint String targetCurrency) {
+    public void setTargetCurrency(@CurrencyConstraint(message = "targetCurrency") String targetCurrency) {
         this.targetCurrency = targetCurrency;
     }
 

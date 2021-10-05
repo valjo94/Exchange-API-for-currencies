@@ -1,12 +1,10 @@
-package com.currency.foreignexchange;
+package com.currency.foreignexchange.services;
 
 import com.currency.foreignexchange.data.TransactionRepository;
 import com.currency.foreignexchange.data.dto.CurrencyTransactionDTO;
 import com.currency.foreignexchange.data.dto.external.CurrencyLayerDTO;
 import com.currency.foreignexchange.data.entities.CurrencyTransaction;
 import com.currency.foreignexchange.exceptionhandling.custom.ElementNotFoundException;
-import com.currency.foreignexchange.services.ConversionService;
-import com.currency.foreignexchange.services.CurrencyExchangeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -30,16 +28,19 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test class for ConversionService
+ */
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ConversionServiceTest {
 
     @Autowired
-    ConversionService conversionService;
+    private ConversionService conversionService;
 
     @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
 
     @BeforeAll
     public void init() throws ServiceUnavailableException {
@@ -56,6 +57,9 @@ class ConversionServiceTest {
         conversionService.convertCurrency(transaction);
     }
 
+    /**
+     * Test convertCurrency method to check correct execution and transaction is stored in db.
+     */
     @Test
     @Order(1)
     void testConvertCurrency() throws ServiceUnavailableException {
@@ -69,6 +73,9 @@ class ConversionServiceTest {
         Assertions.assertEquals(expectedResultRounded, realResult);
     }
 
+    /**
+     * Test convertCurrency method should throw ServiceUnavailableException when third party service is unreachable.
+     */
     @Test
     @Order(1)
     void testConvertCurrencyShouldThrowServiceUnavailableException() {
@@ -83,6 +90,9 @@ class ConversionServiceTest {
                 () -> conversionService.convertCurrency(getMockedCurrencyTransactionDTO(5)));
     }
 
+    /**
+     * Test getCurrencyById method to check if proper object is returned.
+     */
     @Test
     @Order(2)
     void testGetCurrencyById() throws ElementNotFoundException {
@@ -91,12 +101,18 @@ class ConversionServiceTest {
         Assertions.assertEquals(9.77806463563585, currencyById.getAmount());
     }
 
+    /**
+     * Test getCurrencyById method should throw ElementNotFoundException when no entries with the given id are found.
+     */
     @Test
     @Order(3)
     void testGetCurrencyByIdShouldThrowElementNotFoundException() {
         Assertions.assertThrows(ElementNotFoundException.class, () -> conversionService.getTransactionById(100));
     }
 
+    /**
+     * Test getCurrencyByDate method should return all objects created in previous tests.
+     */
     @Test
     @Order(4)
     void testGetCurrencyByDate() throws ElementNotFoundException {
@@ -107,6 +123,9 @@ class ConversionServiceTest {
         Assertions.assertEquals(2, currencyById.size());
     }
 
+    /**
+     * Test getCurrencyByDate method should throw ElementNotFoundException when no entries are found for the given day.
+     */
     @Test
     @Order(4)
     void testGetCurrencyByDateShouldThrowElementNotFoundException() {

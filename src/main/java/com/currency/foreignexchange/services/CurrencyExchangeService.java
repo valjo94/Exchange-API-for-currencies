@@ -28,7 +28,7 @@ public class CurrencyExchangeService {
     private final RestTemplate externalExchangeService;
 
     @Autowired
-    public CurrencyExchangeService(RestTemplate externalExchangeService) {
+    CurrencyExchangeService(RestTemplate externalExchangeService) {
         this.externalExchangeService = externalExchangeService;
     }
 
@@ -40,7 +40,8 @@ public class CurrencyExchangeService {
      * @return double value for the exchange rate between the two currencies
      * @throws ServiceUnavailableException is thrown when the third party service API is not responsive
      */
-    public double getCurrencyExchangeRate(@CurrencyConstraint String sourceCurrency, @CurrencyConstraint String targetCurrency) 
+    public double getCurrencyExchangeRate(@CurrencyConstraint(message = "sourceCurrency") String sourceCurrency, 
+                                          @CurrencyConstraint(message = "targetCurrency") String targetCurrency) 
             throws ServiceUnavailableException {
         CurrencyLayerDTO thirdPartyCurrencyLayerObject;
         try {
@@ -63,9 +64,9 @@ public class CurrencyExchangeService {
      * @return double value for the given amount in target currency
      * @throws ServiceUnavailableException is thrown when the third party service API is not responsive
      */
-    public double convertCurrency(@CurrencyConstraint String sourceCurrency,
-                                  @Min(value = 0, message = "amount parameter must be greater than 0") double amount,
-                                  @CurrencyConstraint String targetCurrency) throws ServiceUnavailableException {
+    double convertCurrency(@CurrencyConstraint(message = "sourceCurrency") String sourceCurrency,
+                                  @Min(value = 1, message = "'amount' parameter is required. Only positive numbers greater than 1 are accepted.") double amount,
+                                  @CurrencyConstraint(message = "targetCurrency") String targetCurrency) throws ServiceUnavailableException {
         CurrencyLayerDTO thirdPartyCurrencyLayerObject;
         try {
             thirdPartyCurrencyLayerObject = externalExchangeService.getForObject(buildURL(sourceCurrency, targetCurrency), CurrencyLayerDTO.class);

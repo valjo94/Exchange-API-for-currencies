@@ -19,16 +19,16 @@ public class CurrencyValidator implements ConstraintValidator<CurrencyConstraint
 
     @Override
     public boolean isValid(String currencyCode, ConstraintValidatorContext cxt) {
-        boolean isValid=false;
-        try {
-            if(Strings.isNotBlank(currencyCode)) {
-                isValid = Currency.getAvailableCurrencies().contains(Currency.getInstance(currencyCode.toUpperCase(Locale.ROOT)));
-            }
-        } catch (IllegalArgumentException ex) {
-            throw new CurrencyCodeException("Request currency code is invalid.");
+        String parameterName = cxt.getDefaultConstraintMessageTemplate();
+        if (Strings.isBlank(currencyCode)) {
+            throw new CurrencyCodeException("Currency code parameter '" + parameterName + "' not specified.");
         }
-        
-        return isValid;
+
+        try {
+            return Currency.getAvailableCurrencies().contains(Currency.getInstance(currencyCode.toUpperCase(Locale.ROOT)));
+        } catch (IllegalArgumentException ex) {
+            throw new CurrencyCodeException("Request currency code parameter '" + parameterName + "' is invalid.");
+        }
     }
 
 }
